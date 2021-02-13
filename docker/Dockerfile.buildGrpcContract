@@ -1,0 +1,6 @@
+FROM microbusiness/protobuf-builder:0.4.0
+LABEL maintainer="morteza.alizadeh@gmail.com"
+
+ADD . /src
+WORKDIR /src/contract/grpc/proto
+RUN protoc user.proto --go_out=plugins=grpc:../go
