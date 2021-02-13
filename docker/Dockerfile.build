@@ -1,0 +1,15 @@
+FROM golang:1.15
+LABEL maintainer="morteza.alizadeh@gmail.com"
+
+ARG VERSION
+
+ADD . /src
+WORKDIR /src
+RUN make dep
+RUN make build
+
+FROM alpine:3
+WORKDIR /
+COPY --from=0 /src/bin/user .
+CMD ["/user", "start"]
+
