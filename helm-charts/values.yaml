@@ -43,6 +43,8 @@ pod:
     connection_string: "mongodb://mongodb:27017"
     name: "user"
     collection: "user"
+  idp:
+    jwksURL: ""
 
 service:
   type: ClusterIP

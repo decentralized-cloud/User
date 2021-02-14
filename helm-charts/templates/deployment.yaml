@@ -44,6 +44,8 @@ spec:
               value: "{{ .Values.pod.database.name }}"
             - name: USER_DATABASE_COLLECTION_NAME
               value: "{{ .Values.pod.database.collection }}"
+            - name: JWKS_URL
+              value: "{{ .Values.pod.idp.jwksURL }}"
           ports:
             - name: grpc
               containerPort: {{ .Values.pod.grpcport }}
