@@ -90,7 +90,8 @@ func (service *businessService) ReadUserByEmail(
 	}
 
 	return &ReadUserByEmailResponse{
-		User: response.User,
+		UserID: response.UserID,
+		User:   response.User,
 	}, nil
 }
 

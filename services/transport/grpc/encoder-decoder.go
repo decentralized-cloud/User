@@ -116,7 +116,8 @@ func encodeReadUserByEmailResponse(
 
 	if castedResponse.Err == nil {
 		return &userGRPCContract.ReadUserByEmailResponse{
-			Error: userGRPCContract.Error_NO_ERROR,
+			Error:  userGRPCContract.Error_NO_ERROR,
+			UserID: castedResponse.UserID,
 			User: &userGRPCContract.User{
 				Email: castedResponse.User.Email,
 			},

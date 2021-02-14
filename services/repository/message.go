@@ -35,7 +35,8 @@ type ReadUserByEmailRequest struct {
 
 // ReadUserByEmailResponse contains the result of reading an existing user by email address
 type ReadUserByEmailResponse struct {
-	User models.User
+	UserID string
+	User   models.User
 }
 
 // UpdateUserRequest contains the request to update an existing user

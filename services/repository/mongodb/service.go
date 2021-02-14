@@ -125,13 +125,24 @@ func (service *mongodbRepositoryService) ReadUserByEmail(
 	filter := bson.D{{Key: "email", Value: request.Email}}
 	var user models.User
 
-	err = collection.FindOne(ctx, filter).Decode(&user)
+	result := collection.FindOne(ctx, filter)
+	err = result.Decode(&user)
 	if err != nil {
 		return nil, repository.NewUserByEmailNotFoundError(request.Email)
 	}
 
+	var userBson bson.M
+
+	err = result.Decode(&userBson)
+	if err != nil {
+		return nil, repository.NewUnknownErrorWithError("Failed to load user bson data", err)
+	}
+
+	userID := userBson["_id"].(primitive.ObjectID).Hex()
+
 	return &repository.ReadUserByEmailResponse{
-		User: user,
+		UserID: userID,
+		User:   user,
 	}, nil
 }
 
