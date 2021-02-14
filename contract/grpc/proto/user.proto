@@ -93,8 +93,11 @@ message ReadUserByEmailResponse {
   // Contains error message if the operation was unsuccessful
   string errorMessage = 2;
 
+  // The unique user identifier
+  string userID = 3;
+
   // The user object
-  User user = 3;
+  User user = 4;
 }
 
 /**

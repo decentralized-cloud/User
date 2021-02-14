@@ -14,7 +14,7 @@ require (
 	github.com/onsi/gomega v1.10.5
 	github.com/prometheus/client_golang v1.9.0
 	github.com/savsgio/atreugo/v11 v11.6.0
-	github.com/spf13/cobra v1.1.1
+	github.com/spf13/cobra v1.1.3
 	github.com/thoas/go-funk v0.7.0
 	go.mongodb.org/mongo-driver v1.4.6
 	go.uber.org/zap v1.16.0
