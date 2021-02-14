@@ -136,3 +136,18 @@ func (mr *MockConfigurationContractMockRecorder) GetDatabaseCollectionName() *go
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDatabaseCollectionName", reflect.TypeOf((*MockConfigurationContract)(nil).GetDatabaseCollectionName))
 }
+
+// GetJwksURL mocks base method
+func (m *MockConfigurationContract) GetJwksURL() (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetJwksURL")
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetJwksURL indicates an expected call of GetJwksURL
+func (mr *MockConfigurationContractMockRecorder) GetJwksURL() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetJwksURL", reflect.TypeOf((*MockConfigurationContract)(nil).GetJwksURL))
+}

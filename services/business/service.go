@@ -34,17 +34,17 @@ func (service *businessService) CreateUser(
 	ctx context.Context,
 	request *CreateUserRequest) (*CreateUserResponse, error) {
 	response, err := service.repositoryService.CreateUser(ctx, &repository.CreateUserRequest{
-		User: request.User,
+		Email: request.Email,
+		User:  request.User,
 	})
 
 	if err != nil {
 		return &CreateUserResponse{
-			Err: mapRepositoryError(err, "", ""),
+			Err: mapRepositoryError(err, request.Email),
 		}, nil
 	}
 
 	return &CreateUserResponse{
-		UserID: response.UserID,
 		User:   response.User,
 		Cursor: response.Cursor,
 	}, nil
@@ -58,40 +58,17 @@ func (service *businessService) ReadUser(
 	ctx context.Context,
 	request *ReadUserRequest) (*ReadUserResponse, error) {
 	response, err := service.repositoryService.ReadUser(ctx, &repository.ReadUserRequest{
-		UserID: request.UserID,
+		Email: request.Email,
 	})
 
 	if err != nil {
 		return &ReadUserResponse{
-			Err: mapRepositoryError(err, request.UserID, ""),
+			Err: mapRepositoryError(err, request.Email),
 		}, nil
 	}
 
 	return &ReadUserResponse{
 		User: response.User,
-	}, nil
-}
-
-// ReadUserByEmail read an existing user by email address
-// ctx: Mandatory The reference to the context
-// request: Mandatory. The request to read an existing user by email address
-// Returns either the result of reading an existing user by email address or error if something goes wrong.
-func (service *businessService) ReadUserByEmail(
-	ctx context.Context,
-	request *ReadUserByEmailRequest) (*ReadUserByEmailResponse, error) {
-	response, err := service.repositoryService.ReadUserByEmail(ctx, &repository.ReadUserByEmailRequest{
-		Email: request.Email,
-	})
-
-	if err != nil {
-		return &ReadUserByEmailResponse{
-			Err: mapRepositoryError(err, "", request.Email),
-		}, nil
-	}
-
-	return &ReadUserByEmailResponse{
-		UserID: response.UserID,
-		User:   response.User,
 	}, nil
 }
 
@@ -103,13 +80,13 @@ func (service *businessService) UpdateUser(
 	ctx context.Context,
 	request *UpdateUserRequest) (*UpdateUserResponse, error) {
 	response, err := service.repositoryService.UpdateUser(ctx, &repository.UpdateUserRequest{
-		UserID: request.UserID,
-		User:   request.User,
+		Email: request.Email,
+		User:  request.User,
 	})
 
 	if err != nil {
 		return &UpdateUserResponse{
-			Err: mapRepositoryError(err, request.UserID, ""),
+			Err: mapRepositoryError(err, request.Email),
 		}, nil
 	}
 
@@ -127,56 +104,25 @@ func (service *businessService) DeleteUser(
 	ctx context.Context,
 	request *DeleteUserRequest) (*DeleteUserResponse, error) {
 	_, err := service.repositoryService.DeleteUser(ctx, &repository.DeleteUserRequest{
-		UserID: request.UserID,
+		Email: request.Email,
 	})
 
 	if err != nil {
 		return &DeleteUserResponse{
-			Err: mapRepositoryError(err, request.UserID, ""),
+			Err: mapRepositoryError(err, request.Email),
 		}, nil
 	}
 
 	return &DeleteUserResponse{}, nil
 }
 
-// Search returns the list of users that matched the criteria
-// ctx: Mandatory The reference to the context
-// request: Mandatory. The request contains the search criteria
-// Returns the list of users that matched the criteria
-func (service *businessService) Search(
-	ctx context.Context,
-	request *SearchRequest) (*SearchResponse, error) {
-	result, err := service.repositoryService.Search(ctx, &repository.SearchRequest{
-		Pagination:     request.Pagination,
-		SortingOptions: request.SortingOptions,
-		UserIDs:        request.UserIDs,
-	})
-
-	if err != nil {
-		return &SearchResponse{
-			Err: mapRepositoryError(err, "", ""),
-		}, nil
-	}
-
-	return &SearchResponse{
-		HasPreviousPage: result.HasPreviousPage,
-		HasNextPage:     result.HasNextPage,
-		TotalCount:      result.TotalCount,
-		Users:           result.Users,
-	}, nil
-}
-
-func mapRepositoryError(err error, userID string, email string) error {
+func mapRepositoryError(err error, email string) error {
 	if repository.IsUserAlreadyExistsError(err) {
 		return NewUserAlreadyExistsErrorWithError(err)
 	}
 
 	if repository.IsUserNotFoundError(err) {
-		return NewUserNotFoundErrorWithError(userID, err)
-	}
-
-	if repository.IsUserByEmailNotFoundError(err) {
-		return NewUserByEmailNotFoundErrorWithError(email, err)
+		return NewUserNotFoundErrorWithError(email, err)
 	}
 
 	return NewUnknownErrorWithError("", err)

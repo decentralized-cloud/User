@@ -30,4 +30,8 @@ type ConfigurationContract interface {
 	// GetDatabaseCollectionName retrieves the database collection name
 	// Returns the database collection name or error if something goes wrong
 	GetDatabaseCollectionName() (string, error)
+
+	// GetJwksURL retrieves the JWKS URL
+	// Returns the JWKS URL or error if something goes wrong
+	GetJwksURL() (string, error)
 }

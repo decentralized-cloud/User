@@ -3,7 +3,6 @@ package models
 
 // User defines the user object
 type User struct {
-	Email string `bson:"email" json:"email"`
 }
 
 // UserWithCursor implements the pair of the user with a cursor that determines the

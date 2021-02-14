@@ -85,23 +85,23 @@ func NewUserAlreadyExistsErrorWithError(err error) error {
 	}
 }
 
-// UserNotFoundError indicates that the user with the given userID does not exist
+// UserNotFoundError indicates that the user with the given email address does not exist
 type UserNotFoundError struct {
-	UserID string
-	Err    error
+	Email string
+	Err   error
 }
 
 // Error returns message for the UserNotFoundError error type
 // Returns the error nessage
 func (e UserNotFoundError) Error() string {
 	if e.Err == nil {
-		return fmt.Sprintf("User not found. UserID: %s.", e.UserID)
+		return fmt.Sprintf("User not found. Email: %s.", e.Email)
 	}
 
-	return fmt.Sprintf("User not found. UserID: %s. Error: %s", e.UserID, e.Err.Error())
+	return fmt.Sprintf("User not found. Email: %s. Error: %s", e.Email, e.Err.Error())
 }
 
-// Unwrap returns the err if provided through NewUserNotFoundErrorWithError function, otherwise returns nil
+// Unwrap returns the err if provided through UserNotFoundError function, otherwise returns nil
 func (e UserNotFoundError) Unwrap() error {
 	return e.Err
 }
@@ -114,62 +114,17 @@ func IsUserNotFoundError(err error) bool {
 }
 
 // NewUserNotFoundError creates a new UserNotFoundError error
-// userID: Mandatory. The userID that did not match any existing user
-func NewUserNotFoundError(userID string) error {
-	return UserNotFoundError{
-		UserID: userID,
-	}
-}
-
-// NewUserNotFoundErrorWithError creates a new UserNotFoundError error
-// userID: Mandatory. The userID that did not match any existing user
-func NewUserNotFoundErrorWithError(userID string, err error) error {
-	return UserNotFoundError{
-		UserID: userID,
-		Err:    err,
-	}
-}
-
-// UserByEmailNotFoundError indicates that the user with the given email address does not exist
-type UserByEmailNotFoundError struct {
-	Email string
-	Err   error
-}
-
-// Error returns message for the UserByEmailNotFoundError error type
-// Returns the error nessage
-func (e UserByEmailNotFoundError) Error() string {
-	if e.Err == nil {
-		return fmt.Sprintf("User not found. Email: %s.", e.Email)
-	}
-
-	return fmt.Sprintf("User not found. Email: %s. Error: %s", e.Email, e.Err.Error())
-}
-
-// Unwrap returns the err if provided through UserByEmailNotFoundError function, otherwise returns nil
-func (e UserByEmailNotFoundError) Unwrap() error {
-	return e.Err
-}
-
-// IsUserByEmailNotFoundError indicates whether the error is of type UserByEmailNotFoundError
-func IsUserByEmailNotFoundError(err error) bool {
-	_, ok := err.(UserByEmailNotFoundError)
-
-	return ok
-}
-
-// NewUserByEmailNotFoundError creates a new UserByEmailNotFoundError error
 // email: Mandatory. The email address that did not match any existing user
-func NewUserByEmailNotFoundError(email string) error {
-	return UserByEmailNotFoundError{
+func NewUserNotFoundError(email string) error {
+	return UserNotFoundError{
 		Email: email,
 	}
 }
 
-// NewUserByEmailNotFoundErrorWithError creates a new UserByEmailNotFoundError error
+// NewUserNotFoundErrorWithError creates a new UserNotFoundError error
 // email: Mandatory. The email address that did not match any existing user
-func NewUserByEmailNotFoundErrorWithError(email string, err error) error {
-	return UserByEmailNotFoundError{
+func NewUserNotFoundErrorWithError(email string, err error) error {
+	return UserNotFoundError{
 		Email: email,
 		Err:   err,
 	}
