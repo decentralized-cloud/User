@@ -61,20 +61,6 @@ func (mr *MockEndpointCreatorContractMockRecorder) ReadUserEndpoint() *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadUserEndpoint", reflect.TypeOf((*MockEndpointCreatorContract)(nil).ReadUserEndpoint))
 }
 
-// ReadUserByEmailEndpoint mocks base method
-func (m *MockEndpointCreatorContract) ReadUserByEmailEndpoint() endpoint.Endpoint {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ReadUserByEmailEndpoint")
-	ret0, _ := ret[0].(endpoint.Endpoint)
-	return ret0
-}
-
-// ReadUserByEmailEndpoint indicates an expected call of ReadUserByEmailEndpoint
-func (mr *MockEndpointCreatorContractMockRecorder) ReadUserByEmailEndpoint() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadUserByEmailEndpoint", reflect.TypeOf((*MockEndpointCreatorContract)(nil).ReadUserByEmailEndpoint))
-}
-
 // UpdateUserEndpoint mocks base method
 func (m *MockEndpointCreatorContract) UpdateUserEndpoint() endpoint.Endpoint {
 	m.ctrl.T.Helper()
@@ -101,18 +87,4 @@ func (m *MockEndpointCreatorContract) DeleteUserEndpoint() endpoint.Endpoint {
 func (mr *MockEndpointCreatorContractMockRecorder) DeleteUserEndpoint() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserEndpoint", reflect.TypeOf((*MockEndpointCreatorContract)(nil).DeleteUserEndpoint))
-}
-
-// SearchEndpoint mocks base method
-func (m *MockEndpointCreatorContract) SearchEndpoint() endpoint.Endpoint {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SearchEndpoint")
-	ret0, _ := ret[0].(endpoint.Endpoint)
-	return ret0
-}
-
-// SearchEndpoint indicates an expected call of SearchEndpoint
-func (mr *MockEndpointCreatorContractMockRecorder) SearchEndpoint() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchEndpoint", reflect.TypeOf((*MockEndpointCreatorContract)(nil).SearchEndpoint))
 }

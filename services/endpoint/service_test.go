@@ -15,7 +15,6 @@ import (
 	gokitendpoint "github.com/go-kit/kit/endpoint"
 	"github.com/golang/mock/gomock"
 	"github.com/lucsky/cuid"
-	"github.com/micro-business/go-core/common"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 
 	. "github.com/onsi/ginkgo"
@@ -83,16 +82,12 @@ var _ = Describe("Endpoint Creator Service Tests", func() {
 			BeforeEach(func() {
 				endpoint = sut.CreateUserEndpoint()
 				request = business.CreateUserRequest{
-					User: models.User{
-						Email: cuid.New() + "@test.com",
-					},
+					Email: cuid.New() + "@test.com",
+					User:  models.User{},
 				}
 
 				response = business.CreateUserResponse{
-					UserID: cuid.New(),
-					User: models.User{
-						Email: cuid.New() + "@test.com",
-					},
+					User:   models.User{},
 					Cursor: cuid.New(),
 				}
 			})
@@ -123,9 +118,8 @@ var _ = Describe("Endpoint Creator Service Tests", func() {
 				When("endpoint is called with invalid request", func() {
 					It("should return ArgumentNilError", func() {
 						invalidRequest := business.CreateUserRequest{
-							User: models.User{
-								Email: "",
-							}}
+							Email: "",
+							User:  models.User{}}
 						returnedResponse, err := endpoint(ctx, &invalidRequest)
 
 						Ω(err).Should(BeNil())
@@ -202,13 +196,11 @@ var _ = Describe("Endpoint Creator Service Tests", func() {
 			BeforeEach(func() {
 				endpoint = sut.ReadUserEndpoint()
 				request = business.ReadUserRequest{
-					UserID: cuid.New(),
+					Email: cuid.New() + "@test.com",
 				}
 
 				response = business.ReadUserResponse{
-					User: models.User{
-						Email: cuid.New() + "@test.com",
-					},
+					User: models.User{},
 				}
 			})
 
@@ -238,7 +230,7 @@ var _ = Describe("Endpoint Creator Service Tests", func() {
 				When("endpoint is called with invalid request", func() {
 					It("should return ArgumentNilError", func() {
 						invalidRequest := business.ReadUserRequest{
-							UserID: "",
+							Email: "",
 						}
 						returnedResponse, err := endpoint(ctx, &invalidRequest)
 
@@ -256,7 +248,7 @@ var _ = Describe("Endpoint Creator Service Tests", func() {
 							EXPECT().
 							ReadUser(ctx, gomock.Any()).
 							Do(func(_ context.Context, mappedRequest *business.ReadUserRequest) {
-								Ω(mappedRequest.UserID).Should(Equal(request.UserID))
+								Ω(mappedRequest.Email).Should(Equal(request.Email))
 							}).
 							Return(&response, nil)
 
@@ -316,15 +308,11 @@ var _ = Describe("Endpoint Creator Service Tests", func() {
 			BeforeEach(func() {
 				endpoint = sut.UpdateUserEndpoint()
 				request = business.UpdateUserRequest{
-					UserID: cuid.New(),
-					User: models.User{
-						Email: cuid.New() + "@test.com",
-					}}
+					Email: cuid.New() + "@test.com",
+					User:  models.User{}}
 
 				response = business.UpdateUserResponse{
-					User: models.User{
-						Email: cuid.New() + "@test.com",
-					},
+					User:   models.User{},
 					Cursor: cuid.New(),
 				}
 			})
@@ -355,10 +343,8 @@ var _ = Describe("Endpoint Creator Service Tests", func() {
 				When("endpoint is called with invalid request", func() {
 					It("should return ArgumentNilError", func() {
 						invalidRequest := business.UpdateUserRequest{
-							UserID: "",
-							User: models.User{
-								Email: "",
-							}}
+							Email: "",
+							User:  models.User{}}
 						returnedResponse, err := endpoint(ctx, &invalidRequest)
 
 						Ω(err).Should(BeNil())
@@ -375,7 +361,7 @@ var _ = Describe("Endpoint Creator Service Tests", func() {
 							EXPECT().
 							UpdateUser(ctx, gomock.Any()).
 							Do(func(_ context.Context, mappedRequest *business.UpdateUserRequest) {
-								Ω(mappedRequest.UserID).Should(Equal(request.UserID))
+								Ω(mappedRequest.Email).Should(Equal(request.Email))
 							}).
 							Return(&response, nil)
 
@@ -435,7 +421,7 @@ var _ = Describe("Endpoint Creator Service Tests", func() {
 			BeforeEach(func() {
 				endpoint = sut.DeleteUserEndpoint()
 				request = business.DeleteUserRequest{
-					UserID: cuid.New(),
+					Email: cuid.New() + "@test.com",
 				}
 
 				response = business.DeleteUserResponse{}
@@ -467,7 +453,7 @@ var _ = Describe("Endpoint Creator Service Tests", func() {
 				When("endpoint is called with invalid request", func() {
 					It("should return ArgumentNilError", func() {
 						invalidRequest := business.DeleteUserRequest{
-							UserID: "",
+							Email: "",
 						}
 						returnedResponse, err := endpoint(ctx, &invalidRequest)
 
@@ -485,7 +471,7 @@ var _ = Describe("Endpoint Creator Service Tests", func() {
 							EXPECT().
 							DeleteUser(ctx, gomock.Any()).
 							Do(func(_ context.Context, mappedRequest *business.DeleteUserRequest) {
-								Ω(mappedRequest.UserID).Should(Equal(request.UserID))
+								Ω(mappedRequest.Email).Should(Equal(request.Email))
 							}).
 							Return(&response, nil)
 
@@ -529,141 +515,6 @@ var _ = Describe("Endpoint Creator Service Tests", func() {
 		})
 	})
 
-	Context("EndpointCreatorService is instantiated", func() {
-		When("SearchEndpoint is called", func() {
-			It("should return valid function", func() {
-				endpoint := sut.SearchEndpoint()
-				Ω(endpoint).ShouldNot(BeNil())
-			})
-
-			var (
-				endpoint gokitendpoint.Endpoint
-				userIDs  []string
-				request  business.SearchRequest
-				response business.SearchResponse
-			)
-
-			BeforeEach(func() {
-				endpoint = sut.SearchEndpoint()
-				userIDs = []string{}
-				for idx := 0; idx < rand.Intn(20)+1; idx++ {
-					userIDs = append(userIDs, cuid.New())
-				}
-
-				request = business.SearchRequest{
-					Pagination: common.Pagination{
-						After:  convertStringToPointer(cuid.New()),
-						First:  convertIntToPointer(rand.Intn(1000)),
-						Before: convertStringToPointer(cuid.New()),
-						Last:   convertIntToPointer(rand.Intn(1000)),
-					},
-					SortingOptions: []common.SortingOptionPair{
-						common.SortingOptionPair{
-							Name:      cuid.New(),
-							Direction: common.Ascending,
-						},
-						common.SortingOptionPair{
-							Name:      cuid.New(),
-							Direction: common.Descending,
-						},
-					},
-					UserIDs: userIDs,
-				}
-
-				users := []models.UserWithCursor{}
-
-				for idx := 0; idx < rand.Intn(20)+1; idx++ {
-					users = append(users, models.UserWithCursor{
-						UserID: cuid.New(),
-						User: models.User{
-							Email: cuid.New() + "@test.com",
-						},
-						Cursor: cuid.New(),
-					})
-				}
-
-				response = business.SearchResponse{
-					HasPreviousPage: (rand.Intn(10) % 2) == 0,
-					HasNextPage:     (rand.Intn(10) % 2) == 0,
-					TotalCount:      rand.Int63n(1000),
-					Users:           users,
-				}
-			})
-
-			Context("SearchEndpoint function is returned", func() {
-				When("endpoint is called with nil context", func() {
-					It("should return ArgumentNilError", func() {
-						returnedResponse, err := endpoint(nil, &request)
-
-						Ω(err).Should(BeNil())
-						Ω(returnedResponse).ShouldNot(BeNil())
-						castedResponse := returnedResponse.(*business.SearchResponse)
-						assertArgumentNilError("ctx", "", castedResponse.Err)
-					})
-				})
-
-				When("endpoint is called with nil request", func() {
-					It("should return ArgumentNilError", func() {
-						returnedResponse, err := endpoint(ctx, nil)
-
-						Ω(err).Should(BeNil())
-						Ω(returnedResponse).ShouldNot(BeNil())
-						castedResponse := returnedResponse.(*business.SearchResponse)
-						assertArgumentNilError("request", "", castedResponse.Err)
-					})
-				})
-
-				When("endpoint is called with valid request", func() {
-					It("should call business service Search method", func() {
-						mockBusinessService.
-							EXPECT().
-							Search(ctx, gomock.Any()).
-							Do(func(_ context.Context, mappedRequest *business.SearchRequest) {
-								Ω(mappedRequest.Pagination).Should(Equal(request.Pagination))
-								Ω(mappedRequest.SortingOptions).Should(Equal(request.SortingOptions))
-								Ω(mappedRequest.UserIDs).Should(Equal(request.UserIDs))
-							}).
-							Return(&response, nil)
-
-						returnedResponse, err := endpoint(ctx, &request)
-
-						Ω(err).Should(BeNil())
-						Ω(response).ShouldNot(BeNil())
-						castedResponse := returnedResponse.(*business.SearchResponse)
-						Ω(castedResponse.Err).Should(BeNil())
-					})
-				})
-
-				When("business service Search returns error", func() {
-					It("should return the same error", func() {
-						expectedErr := errors.New(cuid.New())
-						mockBusinessService.
-							EXPECT().
-							Search(gomock.Any(), gomock.Any()).
-							Return(nil, expectedErr)
-
-						_, err := endpoint(ctx, &request)
-
-						Ω(err).Should(Equal(expectedErr))
-					})
-				})
-
-				When("business service Search returns response", func() {
-					It("should return the same response", func() {
-						mockBusinessService.
-							EXPECT().
-							Search(gomock.Any(), gomock.Any()).
-							Return(&response, nil)
-
-						returnedResponse, err := endpoint(ctx, &request)
-
-						Ω(err).Should(BeNil())
-						Ω(returnedResponse).Should(Equal(&response))
-					})
-				})
-			})
-		})
-	})
 })
 
 func assertArgumentNilError(expectedArgumentName, expectedMessage string, err error) {
@@ -690,12 +541,4 @@ func assertArgumentError(expectedArgumentName, expectedMessage string, err error
 	Ω(argumentErr.ArgumentName).Should(Equal(expectedArgumentName))
 	Ω(strings.Contains(argumentErr.Error(), expectedMessage)).Should(BeTrue())
 	Ω(errors.Unwrap(err)).Should(Equal(nestedErr))
-}
-
-func convertStringToPointer(str string) *string {
-	return &str
-}
-
-func convertIntToPointer(i int) *int {
-	return &i
 }

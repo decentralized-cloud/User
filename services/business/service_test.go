@@ -14,7 +14,6 @@ import (
 	repsoitoryMock "github.com/decentralized-cloud/user/services/repository/mock"
 	"github.com/golang/mock/gomock"
 	"github.com/lucsky/cuid"
-	"github.com/micro-business/go-core/common"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 
 	. "github.com/onsi/ginkgo"
@@ -73,9 +72,8 @@ var _ = Describe("Business Service Tests", func() {
 
 		BeforeEach(func() {
 			request = business.CreateUserRequest{
-				User: models.User{
-					Email: cuid.New() + "@test.com",
-				}}
+				Email: cuid.New() + "@test.com",
+				User:  models.User{}}
 		})
 
 		Context("user service is instantiated", func() {
@@ -125,10 +123,7 @@ var _ = Describe("Business Service Tests", func() {
 				When("And user repository CreateUser return no error", func() {
 					It("should return expected details", func() {
 						expectedResponse := repository.CreateUserResponse{
-							UserID: cuid.New(),
-							User: models.User{
-								Email: cuid.New() + "@test.com",
-							},
+							User:   models.User{},
 							Cursor: cuid.New(),
 						}
 
@@ -140,8 +135,6 @@ var _ = Describe("Business Service Tests", func() {
 						response, err := sut.CreateUser(ctx, &request)
 						Ω(err).Should(BeNil())
 						Ω(response.Err).Should(BeNil())
-						Ω(response.UserID).ShouldNot(BeNil())
-						Ω(response.UserID).Should(Equal(expectedResponse.UserID))
 						assertUser(response.User, expectedResponse.User)
 					})
 				})
@@ -156,7 +149,7 @@ var _ = Describe("Business Service Tests", func() {
 
 		BeforeEach(func() {
 			request = business.ReadUserRequest{
-				UserID: cuid.New(),
+				Email: cuid.New() + "@test.com",
 			}
 		})
 
@@ -167,7 +160,7 @@ var _ = Describe("Business Service Tests", func() {
 						EXPECT().
 						ReadUser(ctx, gomock.Any()).
 						Do(func(_ context.Context, mappedRequest *repository.ReadUserRequest) {
-							Ω(mappedRequest.UserID).Should(Equal(request.UserID))
+							Ω(mappedRequest.Email).Should(Equal(request.Email))
 						}).
 						Return(&repository.ReadUserResponse{}, nil)
 
@@ -179,7 +172,7 @@ var _ = Describe("Business Service Tests", func() {
 
 			When("And user repository ReadUser cannot find provided user", func() {
 				It("should return UserNotFoundError", func() {
-					expectedError := repository.NewUserNotFoundError(request.UserID)
+					expectedError := repository.NewUserNotFoundError(request.Email)
 					mockRepositoryService.
 						EXPECT().
 						ReadUser(gomock.Any(), gomock.Any()).
@@ -187,7 +180,7 @@ var _ = Describe("Business Service Tests", func() {
 
 					response, err := sut.ReadUser(ctx, &request)
 					Ω(err).Should(BeNil())
-					assertUserNotFoundError(request.UserID, response.Err, expectedError)
+					assertUserNotFoundError(request.Email, response.Err, expectedError)
 				})
 			})
 
@@ -208,7 +201,7 @@ var _ = Describe("Business Service Tests", func() {
 			When("And user repository ReadUser return no error", func() {
 				It("should return the user details", func() {
 					expectedResponse := repository.ReadUserResponse{
-						User: models.User{Email: cuid.New() + "@test.com"},
+						User: models.User{},
 					}
 
 					mockRepositoryService.
@@ -232,8 +225,8 @@ var _ = Describe("Business Service Tests", func() {
 
 		BeforeEach(func() {
 			request = business.UpdateUserRequest{
-				UserID: cuid.New(),
-				User:   models.User{Email: cuid.New() + "@test.com"},
+				Email: cuid.New() + "@test.com",
+				User:  models.User{},
 			}
 		})
 
@@ -244,8 +237,7 @@ var _ = Describe("Business Service Tests", func() {
 						EXPECT().
 						UpdateUser(ctx, gomock.Any()).
 						Do(func(_ context.Context, mappedRequest *repository.UpdateUserRequest) {
-							Ω(mappedRequest.UserID).Should(Equal(request.UserID))
-							Ω(mappedRequest.User.Email).Should(Equal(request.User.Email))
+							Ω(mappedRequest.Email).Should(Equal(request.Email))
 						}).
 						Return(&repository.UpdateUserResponse{}, nil)
 
@@ -257,7 +249,7 @@ var _ = Describe("Business Service Tests", func() {
 
 			When("And user repository UpdateUser cannot find provided user", func() {
 				It("should return UserNotFoundError", func() {
-					expectedError := repository.NewUserNotFoundError(request.UserID)
+					expectedError := repository.NewUserNotFoundError(request.Email)
 					mockRepositoryService.
 						EXPECT().
 						UpdateUser(gomock.Any(), gomock.Any()).
@@ -265,7 +257,7 @@ var _ = Describe("Business Service Tests", func() {
 
 					response, err := sut.UpdateUser(ctx, &request)
 					Ω(err).Should(BeNil())
-					assertUserNotFoundError(request.UserID, response.Err, expectedError)
+					assertUserNotFoundError(request.Email, response.Err, expectedError)
 				})
 			})
 
@@ -286,9 +278,7 @@ var _ = Describe("Business Service Tests", func() {
 			When("And user repository UpdateUser return no error", func() {
 				It("should return expected details", func() {
 					expectedResponse := repository.UpdateUserResponse{
-						User: models.User{
-							Email: cuid.New() + "@test.com",
-						},
+						User:   models.User{},
 						Cursor: cuid.New(),
 					}
 					mockRepositoryService.
@@ -312,7 +302,7 @@ var _ = Describe("Business Service Tests", func() {
 
 		BeforeEach(func() {
 			request = business.DeleteUserRequest{
-				UserID: cuid.New(),
+				Email: cuid.New() + "@test.com",
 			}
 		})
 
@@ -323,7 +313,7 @@ var _ = Describe("Business Service Tests", func() {
 						EXPECT().
 						DeleteUser(ctx, gomock.Any()).
 						Do(func(_ context.Context, mappedRequest *repository.DeleteUserRequest) {
-							Ω(mappedRequest.UserID).Should(Equal(request.UserID))
+							Ω(mappedRequest.Email).Should(Equal(request.Email))
 						}).
 						Return(&repository.DeleteUserResponse{}, nil)
 
@@ -335,7 +325,7 @@ var _ = Describe("Business Service Tests", func() {
 
 			When("user repository DeleteUser cannot find provided user", func() {
 				It("should return UserNotFoundError", func() {
-					expectedError := repository.NewUserNotFoundError(request.UserID)
+					expectedError := repository.NewUserNotFoundError(request.Email)
 					mockRepositoryService.
 						EXPECT().
 						DeleteUser(gomock.Any(), gomock.Any()).
@@ -343,7 +333,7 @@ var _ = Describe("Business Service Tests", func() {
 
 					response, err := sut.DeleteUser(ctx, &request)
 					Ω(err).Should(BeNil())
-					assertUserNotFoundError(request.UserID, response.Err, expectedError)
+					assertUserNotFoundError(request.Email, response.Err, expectedError)
 				})
 			})
 
@@ -371,110 +361,6 @@ var _ = Describe("Business Service Tests", func() {
 					response, err := sut.DeleteUser(ctx, &request)
 					Ω(err).Should(BeNil())
 					Ω(response.Err).Should(BeNil())
-				})
-			})
-		})
-	})
-
-	Describe("Search is called", func() {
-		var (
-			request business.SearchRequest
-			userIDs []string
-		)
-
-		BeforeEach(func() {
-			userIDs = []string{}
-			for idx := 0; idx < rand.Intn(20)+1; idx++ {
-				userIDs = append(userIDs, cuid.New())
-			}
-
-			request = business.SearchRequest{
-				Pagination: common.Pagination{
-					After:  convertStringToPointer(cuid.New()),
-					First:  convertIntToPointer(rand.Intn(1000)),
-					Before: convertStringToPointer(cuid.New()),
-					Last:   convertIntToPointer(rand.Intn(1000)),
-				},
-				SortingOptions: []common.SortingOptionPair{
-					common.SortingOptionPair{
-						Name:      cuid.New(),
-						Direction: common.Ascending,
-					},
-					common.SortingOptionPair{
-						Name:      cuid.New(),
-						Direction: common.Descending,
-					},
-				},
-				UserIDs: userIDs,
-			}
-		})
-
-		Context("user service is instantiated", func() {
-			When("Search is called", func() {
-				It("should call user repository Search method", func() {
-					mockRepositoryService.
-						EXPECT().
-						Search(ctx, gomock.Any()).
-						Do(func(_ context.Context, mappedRequest *repository.SearchRequest) {
-							Ω(mappedRequest.Pagination).Should(Equal(request.Pagination))
-							Ω(mappedRequest.SortingOptions).Should(Equal(request.SortingOptions))
-							Ω(mappedRequest.UserIDs).Should(Equal(request.UserIDs))
-						}).
-						Return(&repository.SearchResponse{}, nil)
-
-					response, err := sut.Search(ctx, &request)
-					Ω(err).Should(BeNil())
-					Ω(response.Err).Should(BeNil())
-				})
-			})
-
-			When("user repository Search is faced with any other error", func() {
-				It("should return UnknownError", func() {
-					expectedError := errors.New(cuid.New())
-					mockRepositoryService.
-						EXPECT().
-						Search(gomock.Any(), gomock.Any()).
-						Return(nil, expectedError)
-
-					response, err := sut.Search(ctx, &request)
-					Ω(err).Should(BeNil())
-					assertUnknowError(expectedError.Error(), response.Err, expectedError)
-				})
-			})
-
-			When("user repository Search completes successfully", func() {
-				It("should return the list of matched userIDs", func() {
-					users := []models.UserWithCursor{}
-
-					for idx := 0; idx < rand.Intn(20)+1; idx++ {
-						users = append(users, models.UserWithCursor{
-							UserID: cuid.New(),
-							User: models.User{
-								Email: cuid.New() + "@test.com",
-							},
-							Cursor: cuid.New(),
-						})
-					}
-
-					expectedResponse := repository.SearchResponse{
-						HasPreviousPage: (rand.Intn(10) % 2) == 0,
-						HasNextPage:     (rand.Intn(10) % 2) == 0,
-						TotalCount:      rand.Int63n(1000),
-						Users:           users,
-					}
-
-					mockRepositoryService.
-						EXPECT().
-						Search(gomock.Any(), gomock.Any()).
-						Return(&expectedResponse, nil)
-
-					response, err := sut.Search(ctx, &request)
-					Ω(err).Should(BeNil())
-					Ω(response.Err).Should(BeNil())
-					Ω(response.HasPreviousPage).Should(Equal(expectedResponse.HasPreviousPage))
-					Ω(response.HasNextPage).Should(Equal(expectedResponse.HasNextPage))
-					Ω(response.TotalCount).Should(Equal(expectedResponse.TotalCount))
-					Ω(response.Users).Should(Equal(expectedResponse.Users))
 				})
 			})
 		})
@@ -511,25 +397,16 @@ func assertUserAlreadyExistsError(err error, nestedErr error) {
 	Ω(errors.Unwrap(err)).Should(Equal(nestedErr))
 }
 
-func assertUserNotFoundError(expectedUserID string, err error, nestedErr error) {
+func assertUserNotFoundError(expectedEmail string, err error, nestedErr error) {
 	Ω(business.IsUserNotFoundError(err)).Should(BeTrue())
 
 	var userNotFoundErr business.UserNotFoundError
 	_ = errors.As(err, &userNotFoundErr)
 
-	Ω(userNotFoundErr.UserID).Should(Equal(expectedUserID))
+	Ω(userNotFoundErr.Email).Should(Equal(expectedEmail))
 	Ω(errors.Unwrap(err)).Should(Equal(nestedErr))
 }
 
 func assertUser(user, expectedUser models.User) {
 	Ω(user).ShouldNot(BeNil())
-	Ω(user.Email).Should(Equal(expectedUser.Email))
-}
-
-func convertStringToPointer(str string) *string {
-	return &str
-}
-
-func convertIntToPointer(i int) *int {
-	return &i
 }

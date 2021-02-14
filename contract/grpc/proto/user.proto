@@ -21,10 +21,7 @@ enum Error {
 /**
  * The user object
  */
-message User {
-  // The user email address
-  string email = 1;
-}
+message User {}
 
 /**
  * Request to create a new user
@@ -44,22 +41,19 @@ message CreateUserResponse {
   // Contains error message if the operation was unsuccessful
   string errorMessage = 2;
 
-  // The unique user identifier
-  string userID = 3;
-
   // The created user object
-  User user = 4;
+  User user = 3;
 
   // The cursor defines the position of the user in the repository that can be
   // later referred to using pagination information
-  string cursor = 5;
+  string cursor = 4;
 }
 
 /** Request to read an existing user
  */
 message ReadUserRequest {
-  // The unique user identifier
-  string userID = 1;
+  // The user email address
+  string email = 1;
 }
 
 /**
@@ -76,36 +70,12 @@ message ReadUserResponse {
   User user = 3;
 }
 
-/** Request to read an existing user by email address
- */
-message ReadUserByEmailRequest {
-  // The unique user identifier
-  string email = 1;
-}
-
-/**
- * Response contains the result of reading an existing user by email address
- */
-message ReadUserByEmailResponse {
-  // Indicate whether the operation has any error
-  Error error = 1;
-
-  // Contains error message if the operation was unsuccessful
-  string errorMessage = 2;
-
-  // The unique user identifier
-  string userID = 3;
-
-  // The user object
-  User user = 4;
-}
-
 /**
  * Request to update an existing user
  */
 message UpdateUserRequest {
-  // The unique user identifier
-  string userID = 1;
+  // The user email address
+  string email = 1;
 
   // The user object contains the updated user details to update
   User user = 2;
@@ -133,8 +103,8 @@ message UpdateUserResponse {
  * Request to delete an existing user
  */
 message DeleteUserRequest {
-  // The unique user identifier
-  string userID = 1;
+  // The user email address
+  string email = 1;
 }
 
 /**
@@ -146,109 +116,6 @@ message DeleteUserResponse {
 
   // Contains error message if the operation was unsuccessful
   string errorMessage = 2;
-}
-
-/**
- * The pagination information compatible with graphql-relay connection
- * definition, for more information visit:
- * https://facebook.github.io/relay/graphql/connections.htm
- */
-message Pagination {
-  bool hasFirst = 1;
-
-  int32 first = 2;
-
-  bool hasAfter = 3;
-
-  string after = 4;
-
-  bool hasLast = 5;
-
-  int32 last = 6;
-
-  bool hasBefore = 7;
-
-  string before = 8;
-}
-
-/**
- * The different sorting direction
- */
-enum SortingDirection {
-  // Indicates result data must be sorted from low to high sequence
-  ASCENDING = 0;
-
-  // Indicates result data must be sorted from high to low sequence
-  DESCENDING = 1;
-}
-
-/**
- * Defines the pair of values that are used to determine how the result data
- * should be sorted.
- */
-message SortingOptionPair {
-  // The name of the field on
-  string name = 1;
-
-  // THe sorting direction
-  SortingDirection direction = 2;
-}
-
-/**
- * Request to search for users
- */
-message SearchRequest {
-  // The pagination information
-  Pagination pagination = 1;
-
-  // The collection of sorting option determines how the returned data must be
-  // sorted
-  repeated SortingOptionPair sortingOptions = 2;
-
-  // The unique user identifiers
-  repeated string userIDs = 3;
-}
-
-/*
- * The pair of user and a cursor that defines the position of the user in the
- * repository that can later referred to using pagination information.
- */
-message UserWithCursor {
-  // The user object
-  User user = 1;
-
-  // The unique user identifier
-  string userID = 2;
-
-  // The cursor defines the position of the user in the repository that can be
-  // later referred to using pagination information
-  string cursor = 3;
-}
-
-/**
- * Response contains the result of searching for users
- */
-message SearchResponse {
-  // Indicate whether the operation has any error
-  Error error = 1;
-
-  // Contains error message if the operation was unsuccessful
-  string errorMessage = 2;
-
-  // Indicates whether more edges exist prior to the set defined by the clients
-  // arguments
-  bool hasPreviousPage = 3;
-
-  // Indicates whether more edges exist following the set defined by the clients
-  // arguments
-  bool hasNextPage = 4;
-
-  // Indicates the total count of the users that matched the provided filter
-  // criteria
-  int64 totalCount = 5;
-
-  // The list contains the users that matched the search criteria
-  repeated UserWithCursor users = 6;
 }
 
 /**
@@ -266,11 +133,6 @@ service UserService {
   // Returns the result of reading an existing user
   rpc ReadUser(ReadUserRequest) returns (ReadUserResponse);
 
-  // ReadUser read an exsiting user by email address
-  // request: The request to read an existing user by email address
-  // Returns the result of reading an existing user by email address
-  rpc ReadUserByEmail(ReadUserByEmailRequest) returns (ReadUserByEmailResponse);
-
   // UpdateUser update an exsiting user
   // request: The request to update an existing user
   // Returns the result of updateing an existing user
@@ -280,9 +142,4 @@ service UserService {
   // request: The request to delete an existing user
   // Returns the result of deleting an existing user
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
-
-  // Search returns the list of users that matched the criteria
-  // request: The request contains the search criteria
-  // Returns the list of users that matched the criteria
-  rpc Search(SearchRequest) returns (SearchResponse);
 }

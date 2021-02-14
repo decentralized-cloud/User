@@ -95,3 +95,15 @@ func (service *envConfigurationService) GetDatabaseCollectionName() (string, err
 
 	return databaseCollectionName, nil
 }
+
+// GetJwksURL retrieves the JWKS URL
+// Returns the JWKS URL or error if something goes wrong
+func (service *envConfigurationService) GetJwksURL() (string, error) {
+	jwksURL := os.Getenv("JWKS_URL")
+
+	if strings.Trim(jwksURL, " ") == "" {
+		return "", NewUnknownError("JWKS_URL is required")
+	}
+
+	return jwksURL, nil
+}

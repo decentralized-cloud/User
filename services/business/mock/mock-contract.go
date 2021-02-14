@@ -64,21 +64,6 @@ func (mr *MockBusinessContractMockRecorder) ReadUser(ctx, request interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadUser", reflect.TypeOf((*MockBusinessContract)(nil).ReadUser), ctx, request)
 }
 
-// ReadUserByEmail mocks base method
-func (m *MockBusinessContract) ReadUserByEmail(ctx context.Context, request *business.ReadUserByEmailRequest) (*business.ReadUserByEmailResponse, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ReadUserByEmail", ctx, request)
-	ret0, _ := ret[0].(*business.ReadUserByEmailResponse)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ReadUserByEmail indicates an expected call of ReadUserByEmail
-func (mr *MockBusinessContractMockRecorder) ReadUserByEmail(ctx, request interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadUserByEmail", reflect.TypeOf((*MockBusinessContract)(nil).ReadUserByEmail), ctx, request)
-}
-
 // UpdateUser mocks base method
 func (m *MockBusinessContract) UpdateUser(ctx context.Context, request *business.UpdateUserRequest) (*business.UpdateUserResponse, error) {
 	m.ctrl.T.Helper()
@@ -107,19 +92,4 @@ func (m *MockBusinessContract) DeleteUser(ctx context.Context, request *business
 func (mr *MockBusinessContractMockRecorder) DeleteUser(ctx, request interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockBusinessContract)(nil).DeleteUser), ctx, request)
-}
-
-// Search mocks base method
-func (m *MockBusinessContract) Search(ctx context.Context, request *business.SearchRequest) (*business.SearchResponse, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Search", ctx, request)
-	ret0, _ := ret[0].(*business.SearchResponse)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Search indicates an expected call of Search
-func (mr *MockBusinessContractMockRecorder) Search(ctx, request interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Search", reflect.TypeOf((*MockBusinessContract)(nil).Search), ctx, request)
 }

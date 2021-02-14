@@ -14,10 +14,6 @@ type EndpointCreatorContract interface {
 	// Returns the Read User endpoint
 	ReadUserEndpoint() endpoint.Endpoint
 
-	// ReadUserByEmailEndpoint creates Read User By Email endpoint
-	// Returns the Read User By Email endpoint
-	ReadUserByEmailEndpoint() endpoint.Endpoint
-
 	// UpdateUserEndpoint creates Update User endpoint
 	// Returns the Update User endpoint
 	UpdateUserEndpoint() endpoint.Endpoint
@@ -25,8 +21,4 @@ type EndpointCreatorContract interface {
 	// DeleteUserEndpoint creates Delete User endpoint
 	// Returns the Delete User endpoint
 	DeleteUserEndpoint() endpoint.Endpoint
-
-	// SearchEndpoint creates Search User endpoint
-	// Returns the Search User endpoint
-	SearchEndpoint() endpoint.Endpoint
 }

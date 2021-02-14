@@ -81,33 +81,6 @@ func (service *endpointCreatorService) ReadUserEndpoint() endpoint.Endpoint {
 	}
 }
 
-// ReadUserByEmailEndpoint creates Read User By Email endpoint
-// Returns the Read User By Email endpoint
-func (service *endpointCreatorService) ReadUserByEmailEndpoint() endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		if ctx == nil {
-			return &business.ReadUserByEmailResponse{
-				Err: commonErrors.NewArgumentNilError("ctx", "ctx is required"),
-			}, nil
-		}
-
-		if request == nil {
-			return &business.ReadUserByEmailResponse{
-				Err: commonErrors.NewArgumentNilError("request", "request is required"),
-			}, nil
-		}
-
-		castedRequest := request.(*business.ReadUserByEmailRequest)
-		if err := castedRequest.Validate(); err != nil {
-			return &business.ReadUserByEmailResponse{
-				Err: commonErrors.NewArgumentErrorWithError("request", "", err),
-			}, nil
-		}
-
-		return service.businessService.ReadUserByEmail(ctx, castedRequest)
-	}
-}
-
 // UpdateUserEndpoint creates Update User endpoint
 // Returns the Update User endpoint
 func (service *endpointCreatorService) UpdateUserEndpoint() endpoint.Endpoint {
@@ -159,32 +132,5 @@ func (service *endpointCreatorService) DeleteUserEndpoint() endpoint.Endpoint {
 		}
 
 		return service.businessService.DeleteUser(ctx, castedRequest)
-	}
-}
-
-// SearchEndpoint creates Search User endpoint
-// Returns the Search User endpoint
-func (service *endpointCreatorService) SearchEndpoint() endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		if ctx == nil {
-			return &business.SearchResponse{
-				Err: commonErrors.NewArgumentNilError("ctx", "ctx is required"),
-			}, nil
-		}
-
-		if request == nil {
-			return &business.SearchResponse{
-				Err: commonErrors.NewArgumentNilError("request", "request is required"),
-			}, nil
-		}
-
-		castedRequest := request.(*business.SearchRequest)
-		if err := castedRequest.Validate(); err != nil {
-			return &business.SearchResponse{
-				Err: commonErrors.NewArgumentErrorWithError("request", "", err),
-			}, nil
-		}
-
-		return service.businessService.Search(ctx, castedRequest)
 	}
 }
