@@ -5,9 +5,10 @@ import (
 	"context"
 
 	userGRPCContract "github.com/decentralized-cloud/user/contract/grpc/go"
+	"github.com/decentralized-cloud/user/models"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/lestrrat-go/jwx/jwt"
-	"github.com/micro-business/go-core/pkg/util"
+	"github.com/micro-business/go-core/jwt/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -21,13 +22,10 @@ var authorizedFuncs = map[string]authorizeFunc{
 	"DeleteUser": isAuthorizedToCallDeleteUser,
 }
 
-// CreateLoggingMiddleware creates the logging middleware.
-// endpointName: Mandatory. The name of the endpoint
-// Returns the new endpoint with logging middleware added
 func (service *transportService) createAuthMiddleware(endpointName string) endpoint.Middleware {
 	return func(next endpoint.Endpoint) endpoint.Endpoint {
 		return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-			token, err := util.ParseAndVerifyToken(ctx, service.jwksURL, true)
+			token, err := grpc.ParseAndVerifyToken(ctx, service.jwksURL, true)
 			if err != nil {
 				return nil, err
 			}
@@ -35,6 +33,9 @@ func (service *transportService) createAuthMiddleware(endpointName string) endpo
 			if err = service.isAuthorized(token, endpointName, request); err != nil {
 				return nil, err
 			}
+
+			parsedToken := models.ParsedToken{Email: token.PrivateClaims()["email"].(string)}
+			ctx = context.WithValue(ctx, models.ContextKeyParsedToken, parsedToken)
 
 			return next(ctx, request)
 		}

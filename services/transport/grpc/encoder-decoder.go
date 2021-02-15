@@ -7,7 +7,6 @@ import (
 	userGRPCContract "github.com/decentralized-cloud/user/contract/grpc/go"
 	"github.com/decentralized-cloud/user/models"
 	"github.com/decentralized-cloud/user/services/business"
-	"github.com/micro-business/go-core/pkg/util"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 )
 
@@ -18,13 +17,10 @@ import (
 func decodeCreateUserRequest(
 	ctx context.Context,
 	request interface{}) (interface{}, error) {
-	token, err := util.ParseAndVerifyToken(ctx, "", false)
-	if err != nil {
-		return nil, err
-	}
+	parsedToken := ctx.Value(models.ContextKeyParsedToken).(models.ParsedToken)
 
 	return &business.CreateUserRequest{
-		Email: token.PrivateClaims()["email"].(string),
+		Email: parsedToken.Email,
 		User:  models.User{}}, nil
 }
 
