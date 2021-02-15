@@ -9,8 +9,8 @@ require (
 	github.com/golang/mock v1.4.4
 	github.com/lestrrat-go/jwx v1.1.1
 	github.com/lucsky/cuid v1.0.2
-	github.com/micro-business/go-core v0.3.4
-	github.com/micro-business/gokit-core v0.3.4
+	github.com/micro-business/go-core v0.4.0
+	github.com/micro-business/gokit-core v0.4.0
 	github.com/onsi/ginkgo v1.15.0
 	github.com/onsi/gomega v1.10.5
 	github.com/prometheus/client_golang v1.9.0
