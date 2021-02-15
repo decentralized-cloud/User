@@ -17,11 +17,8 @@ import (
 func decodeCreateUserRequest(
 	ctx context.Context,
 	request interface{}) (interface{}, error) {
-	parsedToken := ctx.Value(models.ContextKeyParsedToken).(models.ParsedToken)
-
 	return &business.CreateUserRequest{
-		Email: parsedToken.Email,
-		User:  models.User{}}, nil
+		User: models.User{}}, nil
 }
 
 // encodeCreateUserResponse encodes CreateUser response from business object to GRPC object

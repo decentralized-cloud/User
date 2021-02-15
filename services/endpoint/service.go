@@ -4,6 +4,7 @@ package endpoint
 import (
 	"context"
 
+	"github.com/decentralized-cloud/user/models"
 	"github.com/decentralized-cloud/user/services/business"
 	"github.com/go-kit/kit/endpoint"
 	commonErrors "github.com/micro-business/go-core/system/errors"
@@ -44,6 +45,9 @@ func (service *endpointCreatorService) CreateUserEndpoint() endpoint.Endpoint {
 		}
 
 		castedRequest := request.(*business.CreateUserRequest)
+		parsedToken := ctx.Value(models.ContextKeyParsedToken).(models.ParsedToken)
+		castedRequest.Email = parsedToken.Email
+
 		if err := castedRequest.Validate(); err != nil {
 			return &business.CreateUserResponse{
 				Err: commonErrors.NewArgumentErrorWithError("request", "", err),
