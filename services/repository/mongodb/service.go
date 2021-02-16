@@ -15,7 +15,6 @@ import (
 )
 
 type user struct {
-	models.User
 	Email string `bson:"email" json:"email"`
 }
 
@@ -69,7 +68,7 @@ func (service *mongodbRepositoryService) CreateUser(
 
 	defer disconnect(ctx, client)
 
-	insertResult, err := collection.InsertOne(ctx, user{request.User, request.Email})
+	insertResult, err := collection.InsertOne(ctx, user{request.Email})
 	if err != nil {
 		return nil, repository.NewUnknownErrorWithError("User creation failed.", err)
 	}
