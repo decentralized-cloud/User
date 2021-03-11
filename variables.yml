@@ -1,0 +1,19 @@
+variables:
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+    artifactVersion: latest
+  ${{ if not(eq(variables['Build.SourceBranch'], 'refs/heads/main')) }}:
+    artifactVersion: $(GitVersion.SemVer)
+  linuxVmImage: "ubuntu-20.04"
+  gitVersion: "5.x"
+  gitVersionConfigFilePath: "$(system.defaultWorkingDirectory)/GitVersion.yml"
+  grpcContractScriptFilePath: "$(system.defaultWorkingDirectory)/scripts/compile-grpc.sh"
+  grpcContractScriptworkingDirectory: "$(system.defaultWorkingDirectory)/scripts"
+  dockerContainerRegistry: "Decentralized Cloud Docker Hub"
+  dockerRepositoryName: "decentralizedcloud/user"
+  testDockerComposeFilePath: "$(system.defaultWorkingDirectory)/docker/docker-compose-test.yml"
+  ciService: $(CI_SERVICE)
+  coverallsToken: $(COVERALLS_TOKEN)
+  helmVersion: "3.5.2"
+  helmChartsDirectoryPath: "$(system.defaultWorkingDirectory)/helm-charts"
+  helmChartsOutputDirectoryPath: "$(system.defaultWorkingDirectory)/chart-output"
+  helmArtifactName: "helm"
