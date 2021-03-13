@@ -23,7 +23,7 @@ resources:
       endpoint: decentralized-cloud
 
 stages:
-  - stage: Build_Test_Publish
+  - stage: Build
     jobs:
       - template: build/build-test-publish.yml@templates
         parameters:
@@ -44,3 +44,48 @@ stages:
           helmChartsDirectoryPath: ${{ variables.helmChartsDirectoryPath }}
           helmChartsOutputDirectoryPath: ${{ variables.helmChartsOutputDirectoryPath }}
           helmArtifactName: ${{ variables.helmArtifactName }}
+
+  - stage: Dev
+    dependsOn: [Build]
+    jobs:
+      - template: release/deploy-service-helm.yml@templates
+        parameters:
+          environment: Dev
+          vmImage: ${{variables.linuxVmImage}}
+          helmArtifactName: ${{ variables.helmArtifactName }}
+          helmVersion: ${{ variables.helmVersion }}
+          kubernetesServiceConnection: ${{ variables.kubernetesServiceConnection }}
+          namespace: ${{ variables.devNamespace }}
+          chartPath: ${{ variables.chartPath }}
+          releaseName: ${{ variables.releaseName }}
+          overrideValues: ${{ variables.devHelmOverrideValues }}
+
+  - stage: Test
+    dependsOn: [Dev]
+    jobs:
+      - template: release/deploy-service-helm.yml@templates
+        parameters:
+          environment: Test
+          vmImage: ${{variables.linuxVmImage}}
+          helmArtifactName: ${{ variables.helmArtifactName }}
+          helmVersion: ${{ variables.helmVersion }}
+          kubernetesServiceConnection: ${{ variables.kubernetesServiceConnection }}
+          namespace: ${{ variables.testNamespace }}
+          chartPath: ${{ variables.chartPath }}
+          releaseName: ${{ variables.releaseName }}
+          overrideValues: ${{ variables.testHelmOverrideValues }}
+
+  - stage: Prod
+    dependsOn: [Test]
+    jobs:
+      - template: release/deploy-service-helm.yml@templates
+        parameters:
+          environment: Prod
+          vmImage: ${{variables.linuxVmImage}}
+          helmArtifactName: ${{ variables.helmArtifactName }}
+          helmVersion: ${{ variables.helmVersion }}
+          kubernetesServiceConnection: ${{ variables.kubernetesServiceConnection }}
+          namespace: ${{ variables.prodNamespace }}
+          chartPath: ${{ variables.chartPath }}
+          releaseName: ${{ variables.releaseName }}
+          overrideValues: ${{ variables.prodHelmOverrideValues }}
