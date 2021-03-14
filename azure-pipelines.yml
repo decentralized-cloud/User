@@ -27,6 +27,7 @@ stages:
     jobs:
       - template: build/build-test-publish.yml@templates
         parameters:
+          version: ${{variables.artifactVersion}}
           vmImage: ${{variables.linuxVmImage}}
           gitVersion: ${{ variables.gitVersion }}
           gitVersionConfigFilePath: ${{ variables.gitVersionConfigFilePath }}
@@ -36,7 +37,6 @@ stages:
           dockerRepositoryName: ${{variables.dockerRepositoryName}}
           dockerBuildFilePath: "$(system.defaultWorkingDirectory)/docker/Dockerfile.build"
           dockerBuildContext: "$(system.defaultWorkingDirectory)"
-          dockerVersion: ${{variables.artifactVersion}}
           testDockerComposeFilePath: ${{ variables.testDockerComposeFilePath }}
           ciService: ${{ variables.ciService }}
           coverallsToken: ${{ variables.coverallsToken }}
@@ -44,6 +44,10 @@ stages:
           helmChartsDirectoryPath: ${{ variables.helmChartsDirectoryPath }}
           helmChartsOutputDirectoryPath: ${{ variables.helmChartsOutputDirectoryPath }}
           helmArtifactName: ${{ variables.helmArtifactName }}
+          shouldPublishHelmChart: ${{ variables.shouldPublishHelmChart }}
+          buildAndPushHelmChartDockerFilePath: ${{ variables.buildAndPushHelmChartDockerFilePath }}
+          buildAndPushHelmChartDockerBuildContext: ${{ variables.buildAndPushHelmChartDockerBuildContext }}
+          githubAccessCredentials: ${{ variables.githubAccessCredentials }}
 
   - stage: Dev
     dependsOn: [Build]

@@ -72,6 +72,21 @@ variables:
   - name: helmArtifactName
     value: "helm"
 
+  - name: shouldPublishHelmChart
+    ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')) }}:
+      value: true
+    ${{ if not(or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))) }}:
+      value: false
+
+  - name: buildAndPushHelmChartDockerFilePath
+    value: "$(system.defaultWorkingDirectory)/docker/Dockerfile.buildAndPushHelmChart"
+
+  - name: buildAndPushHelmChartDockerBuildContext
+    value: "$(system.defaultWorkingDirectory)"
+
+  - name: githubAccessCredentials
+    value: $(GITHUB_ACCESS_CREDENTIAL)
+
   - name: kubernetesServiceConnection
     value: "Azure K8S"
 
