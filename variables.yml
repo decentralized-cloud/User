@@ -33,12 +33,6 @@ variables:
   - name: linuxVmImage
     value: "ubuntu-20.04"
 
-  - name: gitVersion
-    value: "5.x"
-
-  - name: gitVersionConfigFilePath
-    value: "$(system.defaultWorkingDirectory)/GitVersion.yml"
-
   - name: grpcContractScriptFilePath
     value: "$(system.defaultWorkingDirectory)/scripts/compile-grpc.sh"
 
@@ -73,10 +67,10 @@ variables:
     value: "helm"
 
   - name: shouldPublishHelmChart
-    ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')) }}:
-      value: true
-    ${{ if not(or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))) }}:
-      value: false
+    ? ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')) }}
+    : value: true
+    ? ${{ if not(or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))) }}
+    : value: false
 
   - name: buildAndPushHelmChartDockerFilePath
     value: "$(system.defaultWorkingDirectory)/docker/Dockerfile.buildAndPushHelmChart"
@@ -88,7 +82,7 @@ variables:
     value: $(GITHUB_ACCESS_CREDENTIAL)
 
   - name: kubernetesServiceConnection
-    value: "Azure K8S"
+    value: $(KUBERNETES_SERVICE_CONNECTION)
 
   - name: devNamespace
     value: "dev"
