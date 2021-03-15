@@ -61,7 +61,7 @@ variables:
     value: $(COVERALLS_REPO_TOKEN)
 
   - name: helmVersion
-    value: "3.5.2"
+    value: "3.5.3"
 
   - name: helmChartsDirectoryPath
     value: "$(system.defaultWorkingDirectory)/helm-charts"
