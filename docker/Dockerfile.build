@@ -12,4 +12,3 @@ FROM alpine:3
 WORKDIR /
 COPY --from=0 /src/bin/user .
 CMD ["/user", "start"]
-
