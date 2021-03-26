@@ -152,15 +152,15 @@ func encodeDeleteUserResponse(
 }
 
 func mapError(err error) userGRPCContract.Error {
-	if business.IsUnknownError(err) {
+	if commonErrors.IsUnknownError(err) {
 		return userGRPCContract.Error_UNKNOWN
 	}
 
-	if business.IsUserAlreadyExistsError(err) {
+	if commonErrors.IsAlreadyExistsError(err) {
 		return userGRPCContract.Error_USER_ALREADY_EXISTS
 	}
 
-	if business.IsUserNotFoundError(err) {
+	if commonErrors.IsNotFoundError(err) {
 		return userGRPCContract.Error_USER_NOT_FOUND
 	}
 

@@ -92,22 +92,8 @@ var _ = Describe("Business Service Tests", func() {
 					Ω(response.Err).Should(BeNil())
 				})
 
-				When("And user repository CreateUser return UserAlreadyExistError", func() {
-					It("should return UserAlreadyExistsError", func() {
-						expectedError := repository.NewUserAlreadyExistsError()
-						mockRepositoryService.
-							EXPECT().
-							CreateUser(gomock.Any(), gomock.Any()).
-							Return(nil, expectedError)
-
-						response, err := sut.CreateUser(ctx, &request)
-						Ω(err).Should(BeNil())
-						assertUserAlreadyExistsError(response.Err, expectedError)
-					})
-				})
-
-				When("And user repository CreateUser return any other error", func() {
-					It("should return UnknownError", func() {
+				When("And user repository CreateUser returns error", func() {
+					It("should return the same error", func() {
 						expectedError := errors.New(cuid.New())
 						mockRepositoryService.
 							EXPECT().
@@ -116,7 +102,7 @@ var _ = Describe("Business Service Tests", func() {
 
 						response, err := sut.CreateUser(ctx, &request)
 						Ω(err).Should(BeNil())
-						assertUnknowError(expectedError.Error(), response.Err, expectedError)
+						Ω(response.Err).Should(Equal(expectedError))
 					})
 				})
 
@@ -135,7 +121,7 @@ var _ = Describe("Business Service Tests", func() {
 						response, err := sut.CreateUser(ctx, &request)
 						Ω(err).Should(BeNil())
 						Ω(response.Err).Should(BeNil())
-						assertUser(response.User, expectedResponse.User)
+						Ω(response.User).Should(Equal(expectedResponse.User))
 					})
 				})
 			})
@@ -170,22 +156,8 @@ var _ = Describe("Business Service Tests", func() {
 				})
 			})
 
-			When("And user repository ReadUser cannot find provided user", func() {
-				It("should return UserNotFoundError", func() {
-					expectedError := repository.NewUserNotFoundError(request.Email)
-					mockRepositoryService.
-						EXPECT().
-						ReadUser(gomock.Any(), gomock.Any()).
-						Return(nil, expectedError)
-
-					response, err := sut.ReadUser(ctx, &request)
-					Ω(err).Should(BeNil())
-					assertUserNotFoundError(request.Email, response.Err, expectedError)
-				})
-			})
-
-			When("And user repository ReadUser return any other error", func() {
-				It("should return UnknownError", func() {
+			When("And user repository ReadUser returns error", func() {
+				It("should return the same error", func() {
 					expectedError := errors.New(cuid.New())
 					mockRepositoryService.
 						EXPECT().
@@ -194,7 +166,7 @@ var _ = Describe("Business Service Tests", func() {
 
 					response, err := sut.ReadUser(ctx, &request)
 					Ω(err).Should(BeNil())
-					assertUnknowError(expectedError.Error(), response.Err, expectedError)
+					Ω(response.Err).Should(Equal(expectedError))
 				})
 			})
 
@@ -212,7 +184,7 @@ var _ = Describe("Business Service Tests", func() {
 					response, err := sut.ReadUser(ctx, &request)
 					Ω(err).Should(BeNil())
 					Ω(response.Err).Should(BeNil())
-					assertUser(response.User, expectedResponse.User)
+					Ω(response.User).Should(Equal(expectedResponse.User))
 				})
 			})
 		})
@@ -247,22 +219,8 @@ var _ = Describe("Business Service Tests", func() {
 				})
 			})
 
-			When("And user repository UpdateUser cannot find provided user", func() {
-				It("should return UserNotFoundError", func() {
-					expectedError := repository.NewUserNotFoundError(request.Email)
-					mockRepositoryService.
-						EXPECT().
-						UpdateUser(gomock.Any(), gomock.Any()).
-						Return(nil, expectedError)
-
-					response, err := sut.UpdateUser(ctx, &request)
-					Ω(err).Should(BeNil())
-					assertUserNotFoundError(request.Email, response.Err, expectedError)
-				})
-			})
-
-			When("And user repository UpdateUser return any other error", func() {
-				It("should return UnknownError", func() {
+			When("And user repository UpdateUser returns error", func() {
+				It("should return the same error", func() {
 					expectedError := errors.New(cuid.New())
 					mockRepositoryService.
 						EXPECT().
@@ -271,7 +229,7 @@ var _ = Describe("Business Service Tests", func() {
 
 					response, err := sut.UpdateUser(ctx, &request)
 					Ω(err).Should(BeNil())
-					assertUnknowError(expectedError.Error(), response.Err, expectedError)
+					Ω(response.Err).Should(Equal(expectedError))
 				})
 			})
 
@@ -289,7 +247,7 @@ var _ = Describe("Business Service Tests", func() {
 					response, err := sut.UpdateUser(ctx, &request)
 					Ω(err).Should(BeNil())
 					Ω(response.Err).Should(BeNil())
-					assertUser(response.User, expectedResponse.User)
+					Ω(response.User).Should(Equal(expectedResponse.User))
 				})
 			})
 		})
@@ -323,22 +281,8 @@ var _ = Describe("Business Service Tests", func() {
 				})
 			})
 
-			When("user repository DeleteUser cannot find provided user", func() {
-				It("should return UserNotFoundError", func() {
-					expectedError := repository.NewUserNotFoundError(request.Email)
-					mockRepositoryService.
-						EXPECT().
-						DeleteUser(gomock.Any(), gomock.Any()).
-						Return(nil, expectedError)
-
-					response, err := sut.DeleteUser(ctx, &request)
-					Ω(err).Should(BeNil())
-					assertUserNotFoundError(request.Email, response.Err, expectedError)
-				})
-			})
-
-			When("user repository DeleteUser is faced with any other error", func() {
-				It("should return UnknownError", func() {
+			When("user repository DeleteUser returns error", func() {
+				It("should return the same error", func() {
 					expectedError := errors.New(cuid.New())
 					mockRepositoryService.
 						EXPECT().
@@ -347,7 +291,7 @@ var _ = Describe("Business Service Tests", func() {
 
 					response, err := sut.DeleteUser(ctx, &request)
 					Ω(err).Should(BeNil())
-					assertUnknowError(expectedError.Error(), response.Err, expectedError)
+					Ω(response.Err).Should(Equal(expectedError))
 				})
 			})
 
@@ -380,33 +324,4 @@ func assertArgumentNilError(expectedArgumentName, expectedMessage string, err er
 	if expectedMessage != "" {
 		Ω(strings.Contains(argumentNilErr.Error(), expectedMessage)).Should(BeTrue())
 	}
-}
-
-func assertUnknowError(expectedMessage string, err error, nestedErr error) {
-	Ω(business.IsUnknownError(err)).Should(BeTrue())
-
-	var unknownErr business.UnknownError
-	_ = errors.As(err, &unknownErr)
-
-	Ω(strings.Contains(unknownErr.Error(), expectedMessage)).Should(BeTrue())
-	Ω(errors.Unwrap(err)).Should(Equal(nestedErr))
-}
-
-func assertUserAlreadyExistsError(err error, nestedErr error) {
-	Ω(business.IsUserAlreadyExistsError(err)).Should(BeTrue())
-	Ω(errors.Unwrap(err)).Should(Equal(nestedErr))
-}
-
-func assertUserNotFoundError(expectedEmail string, err error, nestedErr error) {
-	Ω(business.IsUserNotFoundError(err)).Should(BeTrue())
-
-	var userNotFoundErr business.UserNotFoundError
-	_ = errors.As(err, &userNotFoundErr)
-
-	Ω(userNotFoundErr.Email).Should(Equal(expectedEmail))
-	Ω(errors.Unwrap(err)).Should(Equal(nestedErr))
-}
-
-func assertUser(user, expectedUser models.User) {
-	Ω(user).ShouldNot(BeNil())
 }

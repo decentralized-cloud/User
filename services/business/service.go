@@ -40,7 +40,7 @@ func (service *businessService) CreateUser(
 
 	if err != nil {
 		return &CreateUserResponse{
-			Err: mapRepositoryError(err, request.Email),
+			Err: err,
 		}, nil
 	}
 
@@ -63,7 +63,7 @@ func (service *businessService) ReadUser(
 
 	if err != nil {
 		return &ReadUserResponse{
-			Err: mapRepositoryError(err, request.Email),
+			Err: err,
 		}, nil
 	}
 
@@ -86,7 +86,7 @@ func (service *businessService) UpdateUser(
 
 	if err != nil {
 		return &UpdateUserResponse{
-			Err: mapRepositoryError(err, request.Email),
+			Err: err,
 		}, nil
 	}
 
@@ -109,21 +109,9 @@ func (service *businessService) DeleteUser(
 
 	if err != nil {
 		return &DeleteUserResponse{
-			Err: mapRepositoryError(err, request.Email),
+			Err: err,
 		}, nil
 	}
 
 	return &DeleteUserResponse{}, nil
-}
-
-func mapRepositoryError(err error, email string) error {
-	if repository.IsUserAlreadyExistsError(err) {
-		return NewUserAlreadyExistsErrorWithError(err)
-	}
-
-	if repository.IsUserNotFoundError(err) {
-		return NewUserNotFoundErrorWithError(email, err)
-	}
-
-	return NewUnknownErrorWithError("", err)
 }
