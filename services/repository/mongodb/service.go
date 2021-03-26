@@ -34,17 +34,17 @@ func NewMongodbRepositoryService(
 
 	connectionString, err := configurationService.GetDatabaseConnectionString()
 	if err != nil {
-		return nil, repository.NewUnknownErrorWithError("Failed to get connection string to mongodb", err)
+		return nil, commonErrors.NewUnknownErrorWithError("Failed to get connection string to mongodb", err)
 	}
 
 	databaseName, err := configurationService.GetDatabaseName()
 	if err != nil {
-		return nil, repository.NewUnknownErrorWithError("Failed to get the database name", err)
+		return nil, commonErrors.NewUnknownErrorWithError("Failed to get the database name", err)
 	}
 
 	databaseCollectionName, err := configurationService.GetDatabaseCollectionName()
 	if err != nil {
-		return nil, repository.NewUnknownErrorWithError("Failed to get the database collection name", err)
+		return nil, commonErrors.NewUnknownErrorWithError("Failed to get the database collection name", err)
 	}
 
 	return &mongodbRepositoryService{
@@ -70,7 +70,7 @@ func (service *mongodbRepositoryService) CreateUser(
 
 	insertResult, err := collection.InsertOne(ctx, user{request.Email})
 	if err != nil {
-		return nil, repository.NewUnknownErrorWithError("User creation failed.", err)
+		return nil, commonErrors.NewUnknownErrorWithError("User creation failed.", err)
 	}
 
 	userID := insertResult.InsertedID.(primitive.ObjectID).Hex()
@@ -113,11 +113,11 @@ func (service *mongodbRepositoryService) UpdateUser(
 	response, err := collection.UpdateOne(ctx, filter, newUser)
 
 	if err != nil {
-		return nil, repository.NewUnknownErrorWithError("Update user failed.", err)
+		return nil, commonErrors.NewUnknownErrorWithError("Update user failed.", err)
 	}
 
 	if response.MatchedCount == 0 {
-		return nil, repository.NewUserNotFoundError(request.Email)
+		return nil, commonErrors.NewNotFoundError()
 	}
 
 	_, userID, err := service.readUser(ctx, &repository.ReadUserRequest{Email: request.Email})
@@ -148,11 +148,11 @@ func (service *mongodbRepositoryService) DeleteUser(
 	filter := bson.D{{Key: "email", Value: request.Email}}
 	response, err := collection.DeleteOne(ctx, filter)
 	if err != nil {
-		return nil, repository.NewUnknownErrorWithError("Delete user failed.", err)
+		return nil, commonErrors.NewUnknownErrorWithError("Delete user failed.", err)
 	}
 
 	if response.DeletedCount == 0 {
-		return nil, repository.NewUserNotFoundError(request.Email)
+		return nil, commonErrors.NewNotFoundError()
 	}
 
 	return &repository.DeleteUserResponse{}, nil
@@ -178,14 +178,14 @@ func (service *mongodbRepositoryService) readUser(
 	result := collection.FindOne(ctx, filter)
 	err = result.Decode(&user)
 	if err != nil {
-		return nil, "", repository.NewUserNotFoundError(request.Email)
+		return nil, "", commonErrors.NewNotFoundError()
 	}
 
 	var userBson bson.M
 
 	err = result.Decode(&userBson)
 	if err != nil {
-		return nil, "", repository.NewUnknownErrorWithError("Failed to load user bson data", err)
+		return nil, "", commonErrors.NewUnknownErrorWithError("Failed to load user bson data", err)
 	}
 
 	userID := userBson["_id"].(primitive.ObjectID).Hex()
@@ -199,7 +199,7 @@ func (service *mongodbRepositoryService) createClientAndCollection(ctx context.C
 	clientOptions := options.Client().ApplyURI(service.connectionString)
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		return nil, nil, repository.NewUnknownErrorWithError("Could not connect to mongodb database.", err)
+		return nil, nil, commonErrors.NewUnknownErrorWithError("Could not connect to mongodb database.", err)
 	}
 
 	return client, client.Database(service.databaseName).Collection(service.databaseCollectionName), nil

@@ -13,6 +13,7 @@ import (
 	"github.com/decentralized-cloud/user/services/repository/mongodb"
 	"github.com/golang/mock/gomock"
 	"github.com/lucsky/cuid"
+	commonErrors "github.com/micro-business/go-core/system/errors"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -145,12 +146,10 @@ var _ = Describe("Mongodb Repository Service Tests", func() {
 				Ω(err).Should(HaveOccurred())
 				Ω(response).Should(BeNil())
 
-				Ω(repository.IsUserNotFoundError(err)).Should(BeTrue())
+				Ω(commonErrors.IsNotFoundError(err)).Should(BeTrue())
 
-				var notFoundErr repository.UserNotFoundError
+				var notFoundErr commonErrors.NotFoundError
 				_ = errors.As(err, &notFoundErr)
-
-				Ω(notFoundErr.Email).Should(Equal(email))
 			})
 		})
 	})
@@ -170,12 +169,10 @@ var _ = Describe("Mongodb Repository Service Tests", func() {
 				Ω(err).Should(HaveOccurred())
 				Ω(response).Should(BeNil())
 
-				Ω(repository.IsUserNotFoundError(err)).Should(BeTrue())
+				Ω(commonErrors.IsNotFoundError(err)).Should(BeTrue())
 
-				var notFoundErr repository.UserNotFoundError
+				var notFoundErr commonErrors.NotFoundError
 				_ = errors.As(err, &notFoundErr)
-
-				Ω(notFoundErr.Email).Should(Equal(email))
 			})
 		})
 
@@ -189,12 +186,10 @@ var _ = Describe("Mongodb Repository Service Tests", func() {
 				Ω(err).Should(HaveOccurred())
 				Ω(response).Should(BeNil())
 
-				Ω(repository.IsUserNotFoundError(err)).Should(BeTrue())
+				Ω(commonErrors.IsNotFoundError(err)).Should(BeTrue())
 
-				var notFoundErr repository.UserNotFoundError
+				var notFoundErr commonErrors.NotFoundError
 				_ = errors.As(err, &notFoundErr)
-
-				Ω(notFoundErr.Email).Should(Equal(email))
 			})
 		})
 
@@ -204,12 +199,10 @@ var _ = Describe("Mongodb Repository Service Tests", func() {
 				Ω(err).Should(HaveOccurred())
 				Ω(response).Should(BeNil())
 
-				Ω(repository.IsUserNotFoundError(err)).Should(BeTrue())
+				Ω(commonErrors.IsNotFoundError(err)).Should(BeTrue())
 
-				var notFoundErr repository.UserNotFoundError
+				var notFoundErr commonErrors.NotFoundError
 				_ = errors.As(err, &notFoundErr)
-
-				Ω(notFoundErr.Email).Should(Equal(email))
 			})
 		})
 	})
