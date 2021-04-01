@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package user;
+
+/**
+ * The different error types
+ */
+enum Error {
+  // Indicates the operation was successful
+  NO_ERROR = 0;
+  // Indicates the operation fail with unknown error
+  UNKNOWN = 1;
+  // Indicates the user already exists
+  USER_ALREADY_EXISTS = 2;
+  // Indicates the user does not exist
+  USER_NOT_FOUND = 3;
+  // Indicates the provided values for he operation were invalid
+  BAD_REQUEST = 4;
+}
