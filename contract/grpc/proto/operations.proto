@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package user;
+
+import "user-messages.proto";
+
+/**
+ * The user servcie that can create new user, read, update and delete existing
+ * user
+ */
+service UserService {
+  // CreateUser creates a new user
+  // request: The request to create a new user
+  // Returns the result of creating new user
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+
+  // ReadUser reads an exsiting user
+  // request: The request to read an existing user
+  // Returns the result of reading an existing user
+  rpc ReadUser(ReadUserRequest) returns (ReadUserResponse);
+
+  // UpdateUser updates an exsiting user
+  // request: The request to update an existing user
+  // Returns the result of updateing an existing user
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+
+  // DeleteUser deletes an exsiting user
+  // request: The request to delete an existing user
+  // Returns the result of deleting an existing user
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+}

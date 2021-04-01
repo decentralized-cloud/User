@@ -2,21 +2,7 @@ syntax = "proto3";
 
 package user;
 
-/**
- * The different error types
- */
-enum Error {
-  // Indicates the operation was successful
-  NO_ERROR = 0;
-  // Indicates the operation fail with unknown error
-  UNKNOWN = 1;
-  // Indicates the user already exists
-  USER_ALREADY_EXISTS = 2;
-  // Indicates the user does not exist
-  USER_NOT_FOUND = 3;
-  // Indicates the provided values for he operation were invalid
-  BAD_REQUEST = 4;
-}
+import "commons.proto";
 
 /**
  * The user object
@@ -116,30 +102,4 @@ message DeleteUserResponse {
 
   // Contains error message if the operation was unsuccessful
   string errorMessage = 2;
-}
-
-/**
- * The user servcie that can create new user, read, update and delete existing
- * user
- */
-service UserService {
-  // CreateUser creates a new user
-  // request: The request to create a new user
-  // Returns the result of creating new user
-  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
-
-  // ReadUser read an exsiting user
-  // request: The request to read an existing user
-  // Returns the result of reading an existing user
-  rpc ReadUser(ReadUserRequest) returns (ReadUserResponse);
-
-  // UpdateUser update an exsiting user
-  // request: The request to update an existing user
-  // Returns the result of updateing an existing user
-  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
-
-  // DeleteUser delete an exsiting user
-  // request: The request to delete an existing user
-  // Returns the result of deleting an existing user
-  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
 }
