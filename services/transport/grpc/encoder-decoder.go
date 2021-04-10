@@ -168,5 +168,5 @@ func mapError(err error) userGRPCContract.Error {
 		return userGRPCContract.Error_BAD_REQUEST
 	}
 
-	panic("Error type undefined.")
+	return userGRPCContract.Error_UNKNOWN
 }
