@@ -5,10 +5,9 @@ package user;
 import "user-messages.proto";
 
 /**
- * The user servcie that can create new user, read, update and delete existing
- * user
+ * The user servcie
  */
-service UserService {
+service Service {
   // CreateUser creates a new user
   // request: The request to create a new user
   // Returns the result of creating new user

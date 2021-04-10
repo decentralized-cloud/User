@@ -100,7 +100,7 @@ func (service *transportService) Start() error {
 	}
 
 	gRPCServer := grpc.NewServer()
-	userGRPCContract.RegisterUserServiceServer(gRPCServer, service)
+	userGRPCContract.RegisterServiceServer(gRPCServer, service)
 	service.logger.Info("gRPC service started", zap.String("address", address))
 
 	Live = true
